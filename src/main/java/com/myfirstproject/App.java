@@ -1,6 +1,9 @@
 package com.myfirstproject;
 
-import org.hibernate.Session;
+import com.myfirstproject.dao.PersonDao;
+import java.util.List;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Hello world!
@@ -9,28 +12,28 @@ import org.hibernate.Session;
 public class App {
 
     public static void main(String[] args) {
-        System.out.println("Maven + Hibernate");
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-        User user = new User();
+        ClassPathXmlApplicationContext cntxt=new ClassPathXmlApplicationContext("Spring.xml");
+        PersonDao personDao=cntxt.getBean(PersonDao.class);
         
+        Person person=new Person();
+        Person person2=new Person();
+        person.setName("Name");
+        person.setCountry("Belarus");
+        person2.setName("Vasia");
+        person2.setCountry("Russia");
         
-        user.setName("Jane");
-        user.setSurname("Austen");
-        user.setPosition("writer");
-        user.setSalary(5.5);
+        personDao.save(person);
+        personDao.save(person2);
         
-        User user2 = new User();
+        System.out.println("Person"+person);
         
+        List<Person> list=personDao.list();
         
-        user2.setName("Vasilit");
-        user2.setSurname("AUGUST");
-        user2.setPosition("reader");
-        user2.setSalary(22.8);
+        for(Person p:list){
+            System.out.println("Person List::"+p);
+            
+        }
         
-        session.save(user);
-        session.save(user2);
-        session.getTransaction().commit();
-
+        cntxt.close();
     }
 }
